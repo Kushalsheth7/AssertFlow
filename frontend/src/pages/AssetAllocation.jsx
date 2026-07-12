@@ -230,8 +230,42 @@ const AssetAllocation = () => {
                       <td>
                         {canManage && (
                           <div className="action-buttons">
-                            <button className="btn-small success">Approve</button>
-                            <button className="btn-small danger">Reject</button>
+                            <button className="btn-small success" onClick={() => {
+                              const updatedDb = { ...db };
+                              const transferIndex = updatedDb.transfers.findIndex(tr => tr.id === t.id);
+                              updatedDb.transfers[transferIndex].status = 'Approved';
+                              
+                              // Find old allocation and mark returned
+                              const oldAllocIndex = updatedDb.allocations.findIndex(a => a.assetId === t.assetId && a.status === 'Active');
+                              if (oldAllocIndex !== -1) {
+                                updatedDb.allocations[oldAllocIndex].status = 'Returned';
+                              }
+
+                              // Create new allocation
+                              updatedDb.allocations.push({
+                                id: Date.now().toString(),
+                                assetId: t.assetId,
+                                assignedTo: t.toId,
+                                assigneeType: 'employee',
+                                status: 'Active'
+                              });
+
+                              updatedDb.notifications.push({
+                                id: Date.now().toString(),
+                                message: `Transfer approved for asset ${asset?.tag}. Assigned to ${toUser?.name}.`,
+                                date: new Date().toISOString()
+                              });
+
+                              setDb(updatedDb);
+                              saveDB(updatedDb);
+                            }}>Approve</button>
+                            <button className="btn-small danger" onClick={() => {
+                              const updatedDb = { ...db };
+                              const transferIndex = updatedDb.transfers.findIndex(tr => tr.id === t.id);
+                              updatedDb.transfers[transferIndex].status = 'Rejected';
+                              setDb(updatedDb);
+                              saveDB(updatedDb);
+                            }}>Reject</button>
                           </div>
                         )}
                       </td>
@@ -273,7 +307,20 @@ const AssetAllocation = () => {
                         {isOverdue && ' (Overdue)'}
                       </td>
                       <td>
-                        <button className="btn-small">Mark Returned</button>
+                        <button className="btn-small" onClick={() => {
+                          const updatedDb = { ...db };
+                          const aIndex = updatedDb.assets.findIndex(a => a.id === alloc.assetId);
+                          updatedDb.assets[aIndex].status = 'Available';
+                          const allocIndex = updatedDb.allocations.findIndex(a => a.id === alloc.id);
+                          updatedDb.allocations[allocIndex].status = 'Returned';
+                          updatedDb.notifications.push({
+                            id: Date.now().toString(),
+                            message: `Asset ${asset?.tag} has been returned and is now available.`,
+                            date: new Date().toISOString()
+                          });
+                          setDb(updatedDb);
+                          saveDB(updatedDb);
+                        }}>Mark Returned</button>
                       </td>
                     </tr>
                   )
