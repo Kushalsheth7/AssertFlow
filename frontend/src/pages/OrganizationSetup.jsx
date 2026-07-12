@@ -20,6 +20,12 @@ const OrganizationSetup = () => {
 
   if (!db) return <div>Loading...</div>;
 
+  const [editingDeptId, setEditingDeptId] = useState(null);
+  const [editingDeptName, setEditingDeptName] = useState('');
+  
+  const [editingCatId, setEditingCatId] = useState(null);
+  const [editingCatName, setEditingCatName] = useState('');
+
   const promoteEmployee = (userId, newRole) => {
     const updatedDb = { ...db };
     const userIndex = updatedDb.users.findIndex(u => u.id === userId);
@@ -73,19 +79,41 @@ const OrganizationSetup = () => {
               <tbody>
                 {db.departments.map(dept => (
                   <tr key={dept.id}>
-                    <td>{dept.name}</td>
+                    <td>
+                      {editingDeptId === dept.id ? (
+                        <input 
+                          type="text" 
+                          value={editingDeptName} 
+                          onChange={(e) => setEditingDeptName(e.target.value)} 
+                          autoFocus
+                          style={{ padding: '6px', borderRadius: '4px', border: '1px solid var(--border-color)', width: '200px' }}
+                        />
+                      ) : (
+                        dept.name
+                      )}
+                    </td>
                     <td><span className={`badge ${dept.status.toLowerCase()}`}>{dept.status}</span></td>
                     <td>
-                      <button className="btn-small" onClick={() => {
-                        const newName = prompt("Enter new department name:", dept.name);
-                        if (newName && newName.trim() !== "") {
-                          const updatedDb = { ...db };
-                          const index = updatedDb.departments.findIndex(d => d.id === dept.id);
-                          updatedDb.departments[index].name = newName.trim();
-                          setDb(updatedDb);
-                          saveDB(updatedDb);
-                        }
-                      }}>Edit</button>
+                      {editingDeptId === dept.id ? (
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button className="btn-small success" onClick={() => {
+                            if (editingDeptName.trim() !== "") {
+                              const updatedDb = { ...db };
+                              const index = updatedDb.departments.findIndex(d => d.id === dept.id);
+                              updatedDb.departments[index].name = editingDeptName.trim();
+                              setDb(updatedDb);
+                              saveDB(updatedDb);
+                            }
+                            setEditingDeptId(null);
+                          }}>Save</button>
+                          <button className="btn-small danger" onClick={() => setEditingDeptId(null)}>Cancel</button>
+                        </div>
+                      ) : (
+                        <button className="btn-small" onClick={() => {
+                          setEditingDeptId(dept.id);
+                          setEditingDeptName(dept.name);
+                        }}>Edit</button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -108,19 +136,41 @@ const OrganizationSetup = () => {
               <tbody>
                 {db.categories.map(cat => (
                   <tr key={cat.id}>
-                    <td>{cat.name}</td>
+                    <td>
+                      {editingCatId === cat.id ? (
+                        <input 
+                          type="text" 
+                          value={editingCatName} 
+                          onChange={(e) => setEditingCatName(e.target.value)} 
+                          autoFocus
+                          style={{ padding: '6px', borderRadius: '4px', border: '1px solid var(--border-color)', width: '200px' }}
+                        />
+                      ) : (
+                        cat.name
+                      )}
+                    </td>
                     <td>{cat.fields.join(', ') || 'None'}</td>
                     <td>
-                      <button className="btn-small" onClick={() => {
-                        const newName = prompt("Enter new category name:", cat.name);
-                        if (newName && newName.trim() !== "") {
-                          const updatedDb = { ...db };
-                          const index = updatedDb.categories.findIndex(c => c.id === cat.id);
-                          updatedDb.categories[index].name = newName.trim();
-                          setDb(updatedDb);
-                          saveDB(updatedDb);
-                        }
-                      }}>Edit</button>
+                      {editingCatId === cat.id ? (
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button className="btn-small success" onClick={() => {
+                            if (editingCatName.trim() !== "") {
+                              const updatedDb = { ...db };
+                              const index = updatedDb.categories.findIndex(c => c.id === cat.id);
+                              updatedDb.categories[index].name = editingCatName.trim();
+                              setDb(updatedDb);
+                              saveDB(updatedDb);
+                            }
+                            setEditingCatId(null);
+                          }}>Save</button>
+                          <button className="btn-small danger" onClick={() => setEditingCatId(null)}>Cancel</button>
+                        </div>
+                      ) : (
+                        <button className="btn-small" onClick={() => {
+                          setEditingCatId(cat.id);
+                          setEditingCatName(cat.name);
+                        }}>Edit</button>
+                      )}
                     </td>
                   </tr>
                 ))}
