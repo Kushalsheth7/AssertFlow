@@ -62,6 +62,11 @@ body.dark-theme select {
   color: #000000 !important;
 }
 
+body.dark-theme .btn.secondary {
+  background-color: #FFFFFF !important;
+  border-color: #FFFFFF !important;
+}
+
 body.dark-theme .btn.ghost {
   color: #A3A3A3 !important; /* Keep ghost button text visible but not pure black if no background */
 }
