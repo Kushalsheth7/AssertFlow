@@ -18,13 +18,13 @@ const OrganizationSetup = () => {
     initDB().then(setDb);
   }, [navigate, currentUser]);
 
-  if (!db) return <div>Loading...</div>;
-
   const [editingDeptId, setEditingDeptId] = useState(null);
   const [editingDeptName, setEditingDeptName] = useState('');
   
   const [editingCatId, setEditingCatId] = useState(null);
   const [editingCatName, setEditingCatName] = useState('');
+
+  if (!db) return <div>Loading...</div>;
 
   const promoteEmployee = (userId, newRole) => {
     const updatedDb = { ...db };
