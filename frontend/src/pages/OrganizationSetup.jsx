@@ -130,7 +130,7 @@ const OrganizationSetup = () => {
                     <td>{user.name}</td>
                     <td>{user.email}</td>
                     <td><span className="role-badge">{user.role}</span></td>
-                    <td><span className={`badge ${user.status.toLowerCase()}`}>{user.status}</span></td>
+                    <td><span className={`badge ${(user.status || 'Active').toLowerCase()}`}>{user.status || 'Active'}</span></td>
                     <td>
                       {user.role === 'Employee' && (
                         <select 
