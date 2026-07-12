@@ -2,6 +2,12 @@
 
 **Next-Generation Enterprise Asset & Resource Management System**
 
+> [!IMPORTANT]
+> **HACKATHON EVALUATORS / JUDGES:**
+> Please use the following credentials to instantly log into the fully populated demo environment (bypassing external rate limits):
+> - **Email:** `admin@assetflow.com`
+> - **Password:** `AssetFlow2026!`
+
 ![AssetFlow Mockup](https://app.excalidraw.com/l/65VNwvy7c4X/5ceOBMjbDby)
 
 AssetFlow is a centralized, highly scalable ERP platform engineered to modernize how organizations track, allocate, and maintain their physical assets and shared resources. By replacing fragmented spreadsheets and manual paper logs with a unified digital ecosystem, AssetFlow delivers real-time visibility into asset lifecycles, condition tracking, and resource utilization.
