@@ -7,6 +7,7 @@ const AssetDirectory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [isRegistering, setIsRegistering] = useState(false);
+  const [expandedAssetId, setExpandedAssetId] = useState(null);
   
   // New Asset Form State
   const [name, setName] = useState('');
@@ -197,17 +198,38 @@ const AssetDirectory = () => {
             {filteredAssets.length > 0 ? filteredAssets.map(asset => {
               const category = db.categories.find(c => c.id === asset.categoryId);
               return (
-                <tr key={asset.id}>
-                  <td className="fw-bold">{asset.tag}</td>
-                  <td>{asset.name} {asset.isShared && <span className="shared-badge">Shared</span>}</td>
-                  <td>{category ? category.name : 'Unknown'}</td>
-                  <td>{asset.serialNumber}</td>
-                  <td>{asset.location}</td>
-                  <td><span className={`status-pill ${asset.status.toLowerCase().replace(' ', '-')}`}>{asset.status}</span></td>
-                  <td>
-                    <button className="btn-small">View Details</button>
-                  </td>
-                </tr>
+                <React.Fragment key={asset.id}>
+                  <tr>
+                    <td className="fw-bold">{asset.tag}</td>
+                    <td>{asset.name} {asset.isShared && <span className="shared-badge">Shared</span>}</td>
+                    <td>{category ? category.name : 'Unknown'}</td>
+                    <td>{asset.serialNumber}</td>
+                    <td>{asset.location}</td>
+                    <td><span className={`status-pill ${asset.status.toLowerCase().replace(' ', '-')}`}>{asset.status}</span></td>
+                    <td>
+                      <button className="btn-small" onClick={() => setExpandedAssetId(expandedAssetId === asset.id ? null : asset.id)}>
+                        {expandedAssetId === asset.id ? 'Close' : 'View Details'}
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedAssetId === asset.id && (
+                    <tr>
+                      <td colSpan="7" style={{ padding: 0 }}>
+                        <div style={{ padding: '24px', backgroundColor: 'var(--hover-bg)', margin: '8px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', gap: '48px' }}>
+                           <div>
+                             <h4 style={{ margin: '0 0 12px 0', color: 'var(--text-primary)' }}>Financials</h4>
+                             <p style={{ margin: '4px 0', fontSize: '13px', color: 'var(--text-secondary)' }}><strong>Purchase Date:</strong> {asset.acquisitionDate || 'N/A'}</p>
+                             <p style={{ margin: '4px 0', fontSize: '13px', color: 'var(--text-secondary)' }}><strong>Cost:</strong> ${asset.acquisitionCost || '0'}</p>
+                           </div>
+                           <div>
+                             <h4 style={{ margin: '0 0 12px 0', color: 'var(--text-primary)' }}>Condition & Data</h4>
+                             <p style={{ margin: '4px 0', fontSize: '13px', color: 'var(--text-secondary)' }}><strong>Condition:</strong> {asset.condition || 'Good'}</p>
+                           </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               );
             }) : (
               <tr>
