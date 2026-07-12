@@ -1,0 +1,43 @@
+.asset-allocation {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.allocation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 500px;
+  margin-top: 24px;
+  background: var(--bg-card);
+  padding: 32px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.allocation-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.allocation-form label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.mt-4 {
+  margin-top: 32px;
+}
+
+.text-danger {
+  color: var(--danger);
+}
