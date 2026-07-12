@@ -171,7 +171,18 @@ const Maintenance = () => {
         {activeTab === 'kanban' && (
           <div className="kanban-board">
             {columns.map(col => (
-              <div key={col} className="kanban-column">
+              <div 
+                key={col} 
+                className="kanban-column"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const reqId = e.dataTransfer.getData('requestId');
+                  if (reqId && canManageState(col)) {
+                    updateStatus(reqId, col);
+                  }
+                }}
+              >
                 <div className="column-header">
                   <h3>{col}</h3>
                   <span className="count">{getCardsByStatus(col).length}</span>
@@ -181,9 +192,20 @@ const Maintenance = () => {
                   {getCardsByStatus(col).map(req => {
                     const asset = db.assets.find(a => a.id === req.assetId);
                     const requester = db.users.find(u => u.id === req.requestedBy);
+                    const isDraggable = canManageState(col);
                     
                     return (
-                      <div key={req.id} className="maintenance-card">
+                      <div 
+                        key={req.id} 
+                        className="maintenance-card"
+                        draggable={isDraggable}
+                        onDragStart={(e) => {
+                          if (isDraggable) {
+                            e.dataTransfer.setData('requestId', req.id);
+                          }
+                        }}
+                        style={{ cursor: isDraggable ? 'grab' : 'default' }}
+                      >
                         <div className="card-header">
                           <span className="asset-tag">{asset?.tag}</span>
                           <span className={`priority-badge ${req.priority.toLowerCase()}`}>{req.priority}</span>
@@ -199,7 +221,7 @@ const Maintenance = () => {
                         <div className="card-footer">
                           <span className="requester">By {requester?.name}</span>
                           
-                          {canManageState(col) && (
+                          {isDraggable && (
                             <select 
                               className="status-select" 
                               value={req.status}
@@ -216,7 +238,7 @@ const Maintenance = () => {
                     )
                   })}
                   {getCardsByStatus(col).length === 0 && (
-                    <div className="empty-column">No tasks</div>
+                    <div className="empty-column">Drag cards here</div>
                   )}
                 </div>
               </div>
