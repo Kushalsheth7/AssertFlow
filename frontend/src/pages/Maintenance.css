@@ -161,3 +161,10 @@
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-md);
 }
+
+/* Mobile Responsiveness for Kanban */
+@media (max-width: 768px) {
+  .kanban-column {
+    flex: 0 0 85vw;
+  }
+}

@@ -159,3 +159,58 @@
   overflow-y: auto;
   padding: 32px 48px; /* Large whitespace */
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    height: auto;
+    border-right: none;
+    border-top: 1px solid var(--border-color);
+    flex-direction: row;
+    z-index: 100;
+  }
+  
+  .sidebar-header {
+    display: none; /* Hide header on mobile to save space */
+  }
+  
+  .sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .sidebar-nav a {
+    padding: 8px 12px;
+    flex-direction: column;
+    font-size: 11px;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  
+  .page-content {
+    padding: 16px;
+    padding-bottom: 80px; /* Space for bottom nav */
+  }
+  
+  .topbar {
+    padding: 0 16px;
+  }
+  
+  .search-box {
+    display: none; /* Hide search on mobile */
+  }
+  
+  .user-info span {
+    display: none; /* Hide username text on mobile, just show avatar */
+  }
+}
