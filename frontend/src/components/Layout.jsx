@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Box, ArrowRightLeft, Calendar, Wrench, ShieldCheck, BarChart3, Bell, Search, Settings, Sun } from 'lucide-react';
+import { LayoutDashboard, Users, Box, ArrowRightLeft, Calendar, Wrench, ShieldCheck, BarChart3, Bell, Search, Settings, Sun, Moon } from 'lucide-react';
 import { getCurrentUser, logoutUser } from '../store/dataStore';
 import './Layout.css';
 
 const Layout = () => {
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Check initial state
+    setIsDark(document.body.classList.contains('dark-theme'));
+  }, []);
+
+  const toggleTheme = () => {
+    if (isDark) {
+      document.body.classList.remove('dark-theme');
+      setIsDark(false);
+    } else {
+      document.body.classList.add('dark-theme');
+      setIsDark(true);
+    }
+  };
 
   const handleLogout = async () => {
     await logoutUser();
@@ -45,8 +61,8 @@ const Layout = () => {
           </div>
           
           <div className="topbar-right">
-            <button className="icon-btn" title="Theme Toggle">
-              <Sun size={20} />
+            <button className="icon-btn" title="Theme Toggle" onClick={toggleTheme}>
+              {isDark ? <Moon size={20} /> : <Sun size={20} />}
             </button>
             <button className="icon-btn" title="Notifications">
               <Bell size={20} />
