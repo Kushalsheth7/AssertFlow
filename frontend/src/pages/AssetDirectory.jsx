@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getDB, saveDB, getCurrentUser } from '../store/dataStore';
+import { getDB, initDB, saveDB, getCurrentUser } from '../store/dataStore';
 import './AssetDirectory.css';
 
 const AssetDirectory = () => {
@@ -15,19 +15,33 @@ const AssetDirectory = () => {
   const [condition, setCondition] = useState('Good');
   const [location, setLocation] = useState('');
   const [isShared, setIsShared] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const currentUser = getCurrentUser();
 
   useEffect(() => {
-    setDb(getDB());
+    initDB().then(setDb);
   }, []);
 
   if (!db) return <div>Loading...</div>;
 
   const canRegister = currentUser?.role === 'Admin' || currentUser?.role === 'Asset Manager';
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setUploading(true);
+    let photoUrl = null;
+
+    if (photoFile) {
+      try {
+        const { uploadFile } = await import('../store/api');
+        photoUrl = await uploadFile('assets', photoFile);
+      } catch (err) {
+        console.error("Failed to upload photo", err);
+      }
+    }
+
     const newTag = `AF-${(db.assets.length + 1).toString().padStart(4, '0')}`;
     const newAsset = {
       id: Date.now().toString(),
@@ -40,7 +54,8 @@ const AssetDirectory = () => {
       condition,
       location,
       isShared,
-      status: 'Available'
+      status: 'Available',
+      photoUrl
     };
     
     const updatedDb = { ...db, assets: [...db.assets, newAsset] };
@@ -55,6 +70,8 @@ const AssetDirectory = () => {
     setCondition('Good');
     setLocation('');
     setIsShared(false);
+    setPhotoFile(null);
+    setUploading(false);
   };
 
   const filteredAssets = db.assets.filter(asset => {
@@ -124,8 +141,17 @@ const AssetDirectory = () => {
                 </label>
               </div>
             </div>
+
+            <div className="form-row">
+              <div className="form-group" style={{ flex: '1' }}>
+                <label>Asset Photo (Optional)</label>
+                <input type="file" accept="image/*" onChange={e => setPhotoFile(e.target.files[0])} />
+              </div>
+            </div>
             
-            <button type="submit" className="btn primary submit-btn">Save Asset</button>
+            <button type="submit" className="btn primary submit-btn" disabled={uploading}>
+              {uploading ? 'Uploading...' : 'Save Asset'}
+            </button>
           </form>
         </div>
       )}

@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -10,12 +13,14 @@ import Maintenance from './pages/Maintenance';
 import Audit from './pages/Audit';
 import Reports from './pages/Reports';
 import ActivityLogs from './pages/ActivityLogs';
+import Settings from './pages/Settings';
 
 import './App.css';
 
 function App() {
   return (
     <Router>
+      <ToastContainer position="bottom-right" />
       <Routes>
         <Route path="/login" element={<Login />} />
         
@@ -31,6 +36,7 @@ function App() {
           <Route path="audit" element={<Audit />} />
           <Route path="reports" element={<Reports />} />
           <Route path="activity" element={<ActivityLogs />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </Router>

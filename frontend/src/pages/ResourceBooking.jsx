@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getDB, saveDB, getCurrentUser } from '../store/dataStore';
+import { getDB, initDB, saveDB, getCurrentUser } from '../store/dataStore';
 import './ResourceBooking.css';
 
 const ResourceBooking = () => {
@@ -13,7 +13,7 @@ const ResourceBooking = () => {
   const currentUser = getCurrentUser();
 
   useEffect(() => {
-    setDb(getDB());
+    initDB().then(setDb);
   }, []);
 
   if (!db) return <div>Loading...</div>;

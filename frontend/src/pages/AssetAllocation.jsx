@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getDB, saveDB, getCurrentUser } from '../store/dataStore';
+import { getDB, initDB, saveDB, getCurrentUser } from '../store/dataStore';
 import './AssetAllocation.css';
 
 const AssetAllocation = () => {
@@ -21,7 +21,7 @@ const AssetAllocation = () => {
   const currentUser = getCurrentUser();
 
   useEffect(() => {
-    setDb(getDB());
+    initDB().then(setDb);
   }, []);
 
   if (!db) return <div>Loading...</div>;

@@ -8,8 +8,8 @@ const Layout = () => {
   const navigate = useNavigate();
   const user = getCurrentUser();
 
-  const handleLogout = () => {
-    logoutUser();
+  const handleLogout = async () => {
+    await logoutUser();
     navigate('/login');
   };
 
@@ -55,7 +55,7 @@ const Layout = () => {
             <div className="user-info">
               <div className="avatar">{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>
               <span>{user?.name || 'User'}</span>
-              <button onClick={handleLogout} className="logout-btn">Logout</button>
+              <button onClick={handleLogout} className="logout-btn" style={{ backgroundColor: '#EF4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}>Logout</button>
             </div>
           </div>
         </header>

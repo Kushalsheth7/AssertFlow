@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getDB, saveDB, getCurrentUser } from '../store/dataStore';
+import { getDB, initDB, saveDB, getCurrentUser } from '../store/dataStore';
 import { useNavigate } from 'react-router-dom';
 import './OrganizationSetup.css';
 
@@ -15,7 +15,7 @@ const OrganizationSetup = () => {
       navigate('/dashboard');
       return;
     }
-    setDb(getDB());
+    initDB().then(setDb);
   }, [navigate, currentUser]);
 
   if (!db) return <div>Loading...</div>;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getDB, saveDB, getCurrentUser } from '../store/dataStore';
+import { getDB, initDB, saveDB, getCurrentUser } from '../store/dataStore';
 import './Maintenance.css';
 
 const Maintenance = () => {
@@ -10,22 +10,36 @@ const Maintenance = () => {
   const [selectedAsset, setSelectedAsset] = useState('');
   const [issue, setIssue] = useState('');
   const [priority, setPriority] = useState('Medium');
+  const [photoFile, setPhotoFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   
   const currentUser = getCurrentUser();
 
   useEffect(() => {
-    setDb(getDB());
+    initDB().then(setDb);
   }, []);
 
   if (!db) return <div>Loading...</div>;
 
   const canApprove = currentUser?.role === 'Admin' || currentUser?.role === 'Asset Manager';
 
-  const handleRequest = (e) => {
+  const handleRequest = async (e) => {
     e.preventDefault();
 
     const asset = db.assets.find(a => a.id === selectedAsset);
     if (!asset) return;
+
+    setUploading(true);
+    let photoUrl = null;
+
+    if (photoFile) {
+      try {
+        const { uploadFile } = await import('../store/api');
+        photoUrl = await uploadFile('assets', photoFile);
+      } catch (err) {
+        console.error("Failed to upload photo", err);
+      }
+    }
 
     const newMaintenance = {
       id: Date.now().toString(),
@@ -34,7 +48,8 @@ const Maintenance = () => {
       issue,
       priority,
       status: 'Pending',
-      requestDate: new Date().toISOString()
+      requestDate: new Date().toISOString(),
+      photoUrl
     };
 
     const updatedDb = { ...db };
@@ -51,6 +66,8 @@ const Maintenance = () => {
     setSelectedAsset('');
     setIssue('');
     setPriority('Medium');
+    setPhotoFile(null);
+    setUploading(false);
     setActiveTab('kanban'); // switch to board to see it
   };
 
@@ -139,7 +156,14 @@ const Maintenance = () => {
                 </select>
               </div>
 
-              <button type="submit" className="btn primary mt-2">Submit Request</button>
+              <div className="form-group">
+                <label>Issue Photo (Optional)</label>
+                <input type="file" accept="image/*" onChange={e => setPhotoFile(e.target.files[0])} />
+              </div>
+
+              <button type="submit" className="btn primary mt-2" disabled={uploading}>
+                {uploading ? 'Uploading...' : 'Submit Request'}
+              </button>
             </form>
           </div>
         )}
@@ -166,6 +190,11 @@ const Maintenance = () => {
                         </div>
                         <h4 className="asset-name">{asset?.name}</h4>
                         <p className="issue-text">{req.issue}</p>
+                        {req.photoUrl && (
+                          <div style={{ marginTop: '8px', marginBottom: '8px' }}>
+                            <img src={req.photoUrl} alt="Issue" style={{ width: '100%', borderRadius: '4px' }} />
+                          </div>
+                        )}
                         
                         <div className="card-footer">
                           <span className="requester">By {requester?.name}</span>

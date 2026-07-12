@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, getDB, saveDB } from '../store/dataStore';
+import { loginUser, signUpUser } from '../store/dataStore';
 import './Login.css';
 
 const Login = () => {
@@ -11,36 +11,19 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleAuth = (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
     setError('');
     
-    if (isLogin) {
-      try {
-        loginUser(email, password);
-        navigate('/dashboard');
-      } catch (err) {
-        setError(err.message);
+    try {
+      if (isLogin) {
+        await loginUser(email, password);
+      } else {
+        await signUpUser(email, password, name);
       }
-    } else {
-      const db = getDB();
-      if (db.users.find(u => u.email === email)) {
-        setError('Email already exists');
-        return;
-      }
-      const newUser = {
-        id: Date.now().toString(),
-        name,
-        email,
-        password,
-        role: 'Employee', // Signup creates Employee account only
-        department: null,
-        status: 'Active'
-      };
-      db.users.push(newUser);
-      saveDB(db);
-      loginUser(email, password);
       navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Authentication failed');
     }
   };
 

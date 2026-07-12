@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getDB, getCurrentUser } from '../store/dataStore';
+import { getDB, initDB, getCurrentUser } from '../store/dataStore';
 import { useNavigate } from 'react-router-dom';
 import { Box, UserCheck, Wrench, CalendarCheck, ArrowRightLeft, Clock, AlertTriangle } from 'lucide-react';
 import './Dashboard.css';
@@ -16,7 +16,7 @@ const Dashboard = () => {
       return;
     }
     setCurrentUser(user);
-    setDb(getDB());
+    initDB().then(setDb);
   }, [navigate]);
 
   if (!db || !currentUser) return <div>Loading...</div>;
