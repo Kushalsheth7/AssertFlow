@@ -76,7 +76,16 @@ const OrganizationSetup = () => {
                     <td>{dept.name}</td>
                     <td><span className={`badge ${dept.status.toLowerCase()}`}>{dept.status}</span></td>
                     <td>
-                      <button className="btn-small">Edit</button>
+                      <button className="btn-small" onClick={() => {
+                        const newName = prompt("Enter new department name:", dept.name);
+                        if (newName && newName.trim() !== "") {
+                          const updatedDb = { ...db };
+                          const index = updatedDb.departments.findIndex(d => d.id === dept.id);
+                          updatedDb.departments[index].name = newName.trim();
+                          setDb(updatedDb);
+                          saveDB(updatedDb);
+                        }
+                      }}>Edit</button>
                     </td>
                   </tr>
                 ))}
@@ -102,7 +111,16 @@ const OrganizationSetup = () => {
                     <td>{cat.name}</td>
                     <td>{cat.fields.join(', ') || 'None'}</td>
                     <td>
-                      <button className="btn-small">Edit</button>
+                      <button className="btn-small" onClick={() => {
+                        const newName = prompt("Enter new category name:", cat.name);
+                        if (newName && newName.trim() !== "") {
+                          const updatedDb = { ...db };
+                          const index = updatedDb.categories.findIndex(c => c.id === cat.id);
+                          updatedDb.categories[index].name = newName.trim();
+                          setDb(updatedDb);
+                          saveDB(updatedDb);
+                        }
+                      }}>Edit</button>
                     </td>
                   </tr>
                 ))}
